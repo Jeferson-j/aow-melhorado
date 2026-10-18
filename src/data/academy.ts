@@ -109,7 +109,7 @@ export const polos: Polo[] = [
     leader: "Prof. Daniel Neves",
     description:
       "Um tatame aberto para quem está começando e para quem busca sua próxima graduação.",
-    images: [image("/images/daniel-alves.jpeg", "Atleta em movimento")],
+    images: [image("/images/deniel-alves.jpeg", "Atleta em movimento")],
   },
   {
     name: "Polo Itauna",
