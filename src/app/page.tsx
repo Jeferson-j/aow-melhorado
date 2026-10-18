@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
 
@@ -44,16 +44,191 @@ function Button({
 
 const carouselImages = polos
   .flatMap((polo) => polo.images.map((image) => ({ image, polo })))
-  .slice(0, 8);
+  .slice(0, 11);
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const competitionImages = [
+  {
+    src: `${basePath}/competicoes/01-rio-international-cup-podio.jpg`,
+    alt: "Dois atletas no pódio do Rio International Cup, segurando as medalhas",
+    title: "Rio International Cup",
+    detail: "Victor Miranda campeão",
+  },
+  {
+    src: `${basePath}/competicoes/02-world-championship-1lugar.jpg`,
+    alt: "Atleta sentada no pódio do 1º lugar do World Jiu-Jitsu Championship, com medalha de ouro",
+    title: "World Jiu-Jitsu Championship",
+    detail: "Atleta Esther campeã",
+  },
+  {
+    src: `${basePath}/competicoes/03-rio-winter-open-2026-ouro.jpg`,
+    alt: "Atleta de kimono preto e faixa azul mostrando a medalha de ouro do Rio Winter International Open 2026",
+    title: "Rio Winter International Open · Ouro",
+    detail: "Jaline Cunha campeã",
+  },
+  {
+    src: `${basePath}/competicoes/04-mundial-cbjjo-2026-1lugar.jpg`,
+    alt: "Atleta de kimono preto no pódio do 1º lugar do Campeonato Mundial 2026, segurando a medalha",
+    title: "Campeonato Mundial CBJJO · 1º lugar",
+    detail: "Giovana Braga campeã",
+  },
+  {
+    src: `${basePath}/competicoes/05-brasileiro-criancas-2026-ouro.jpg`,
+    alt: "Atleta sentada no pódio do Brasileiro de Jiu-Jitsu Crianças 2026 com duas medalhas de ouro",
+    title: "Brasileiro de Crianças CBJJ · Ouro",
+    detail: "Isa Lopes campeã Brasileira",
+  },
+  {
+    src: `${basePath}/competicoes/06-brasileiro-cbjjo-2026-ouro.jpg`,
+    alt: "Atleta de kimono branco sentado no pódio do Campeonato Brasileiro 2026 com medalha de ouro",
+    title: "Campeonato Brasileiro CBJJO · Ouro",
+    detail: "Rhavi Gomes campeão Brasileiro",
+  },
+  {
+    src: `${basePath}/competicoes/07-rio-winter-ouro-dupla.jpg`,
+    alt: "Dois atletas da equipe mostrando as medalhas de ouro do Rio Winter",
+    title: "Rio Winter · Ouro",
+    detail: "Irmãos oliveira",
+  },
+  {
+    src: `${basePath}/competicoes/08-brasileiro-criancas-2024-ouro.jpg`,
+    alt: "Atleta de kimono branco com o patch da equipe sorrindo com a medalha de ouro do Brasileiro de Crianças 2024",
+    title: "Brasileiro de Crianças CBJJ · Ouro",
+    detail: "Gabriela Miranda campeã Brasileira",
+  },
+  {
+    src: `${basePath}/competicoes/09-arena-medalha-ouro-faixa-azul.jpg`,
+    alt: "Atleta de kimono preto e faixa azul mostrando a medalha de ouro dentro da arena do campeonato",
+    title: "Campeão AJP",
+    detail: "Arthur Caleb",
+  },
+  {
+    src: `${basePath}/competicoes/10-mundial-cbjjo-2026-prata.jpg`,
+    alt: "Atleta de kimono branco no pódio do 2º lugar do Campeonato Mundial 2026, com medalha de prata",
+    title: "Campeonato Mundial CBJJO · Prata",
+    detail: "Beatriz vice-campeã",
+  },
+  {
+    src: `${basePath}/competicoes/11-brasileiro-cbjjo-2026-medalhista.jpg`,
+    alt: "Atleta de kimono preto sentado no pódio do Campeonato Brasileiro 2026 com a medalha",
+    title: "Campeonato Brasileiro CBJJO",
+    detail: "Guilherme campão Brasileiro",
+  },
+  {
+    src: `${basePath}/competicoes/12-medalha-ouro-por-do-sol.jpg`,
+    alt: "Atleta de kimono preto mostrando a medalha de ouro ao entardecer",
+    title: "Vice-campeã Sulamericano",
+    detail: "Atleta Aida",
+  },
+];
+
+const SHOP_INTERVAL = 6000; // tempo de cada peça na tela, em milissegundos
+
+const lojaLink = (produto: string) =>
+  `https://wa.me/${academy.whatsappLoja}?text=${encodeURIComponent(
+    `Olá! Vi "${produto}" no site da ${academy.name} e gostaria de mais informações.`,
+  )}`;
+
+// TROQUE as fotos, descrições, tamanhos e valores pelos reais
+// TROQUE os valores (R$ 0,00) e confira os tamanhos de cada peça
+const produtos = [
+  {
+    category: "Kimono",
+    name: "Kimono Preto infantil",
+    detail: "Preto, com o patch AOW Jiu-Jitsu no peito e nas mangas.",
+    src: `${basePath}/produtos/01-kimono-preto.jpg`,
+    alt: "Atleta de kimono preto com faixa amarela, patch AOW Jiu-Jitsu no peito e nas mangas",
+    sizes: ["A0", "A1", "A2", "A3", "A4", "A5"],
+    price: "R$ 330,00",
+  },
+  {
+    category: "Kimono",
+    name: "Kimono Branco adulto",
+    detail: "Branco, com patches AOW no peito e nas mangas e logo na calça.",
+    src: `${basePath}/produtos/02-kimono-branco.jpg`,
+    alt: "Atleta de kimono branco com faixa amarela e patches AOW no peito, nas mangas e na calça",
+    sizes: ["A0", "A1", "A2", "A3", "A4", "A5"],
+    price: "R$ 350,00",
+  },
+  {
+    category: "Kimono infantil",
+    name: "Kimono Infantil Branco",
+    detail: "Branco, com patches AOW no peito e nas mangas.",
+    src: `${basePath}/produtos/03-kimono-infantil-branco.jpg`,
+    alt: "Criança de kimono branco com faixa cinza e patches AOW no peito e nas mangas",
+    sizes: ["M0", "M1", "M2", "M3", "M4"],
+    price: "R$ 330,00",
+  },
+  {
+    category: "Kimono infantil",
+    name: "Kimono Infantil Preto",
+    detail: "Preto, com AOW em branco no peito e nas mangas.",
+    src: `${basePath}/produtos/04-kimono-infantil-preto.jpg`,
+    alt: "Criança de kimono preto com faixa cinza e AOW em branco no peito e nas mangas",
+    sizes: ["M0", "M1", "M2", "M3", "M4"],
+    price: "R$ 330,00",
+  },
+  {
+    category: "Rashguard",
+    name: "Rashguard ",
+    detail: "Manga curta, com AOW Jiu-Jitsu no peito e Art of War nas mangas.",
+    src: `${basePath}/produtos/05-rashguard-preta-01.jpg`,
+    alt: "Atleta de rashguard preta de manga curta com AOW Jiu-Jitsu no peito",
+    sizes: ["P", "M", "G", "GG"],
+    price: "R$ 80,00",
+  },
+  {
+    category: "Rashguard",
+    name: "Rashguard ",
+    detail: "Manga curta, com AOW Jiu-Jitsu no peito e Art of War nas mangas.",
+    src: `${basePath}/produtos/06-rashguard-preta-02.jpg`,
+    alt: "Atleta de rashguard preta com AOW Jiu-Jitsu no peito e faixa amarela",
+    sizes: ["P", "M", "G", "GG"],
+    price: "R$ 80,00",
+  },
+  {
+    category: "Rashguard",
+    name: "Rashguard ",
+    detail: "Manga curta, com AOW Jiu-Jitsu no peito e Art of War nas mangas.",
+    src: `${basePath}/produtos/07-rashguard-preta-03.jpg`,
+    alt: "Atleta de rashguard preta com AOW Jiu-Jitsu no peito e faixa verde",
+    sizes: ["P", "M", "G", "GG"],
+    price: "R$ 80,00",
+  },
+  {
+    category: "Rashguard",
+    name: "Rashguard · Equipe",
+    detail: "A rashguard da equipe AOW Jiu-Jitsu em diferentes tamanhos.",
+    src: `${basePath}/produtos/08-rashguard-equipe.jpg`,
+    alt: "Grupo de seis atletas da equipe usando a rashguard preta da AOW Jiu-Jitsu",
+    sizes: ["P", "M", "G", "GG"],
+    price: "R$ 80,00",
+  },
+];
 
 export default function Home() {
+  const nomeResponsavel = responsavel.name.trim().split(/\s+/);
   const [menu, setMenu] = useState(false);
   const [polo, setPolo] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [formError, setFormError] = useState("");
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [compIndex, setCompIndex] = useState(0);
+  const compTouchX = useRef<number | null>(null);
+  const [prodIndex, setProdIndex] = useState(0);
+  const prodTouchX = useRef<number | null>(null);
+
+  const goToProd = (index: number) => {
+    const total = produtos.length;
+    setProdIndex(((index % total) + total) % total);
+  };
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setProdIndex((current) => (current + 1) % produtos.length);
+    }, SHOP_INTERVAL);
+    return () => window.clearTimeout(timer);
+  }, [prodIndex]);
   const [snapCount, setSnapCount] = useState(carouselImages.length);
   const whatsapp = `https://wa.me/${academy.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de conhecer a academia.")}`;
   const goToContact = () => {
@@ -61,6 +236,18 @@ export default function Home() {
       behavior: "smooth",
     });
   };
+  const goToComp = (index: number) => {
+    const total = competitionImages.length;
+    setCompIndex(((index % total) + total) % total);
+  };
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setCompIndex((current) => (current + 1) % competitionImages.length);
+    }, 4500);
+    return () => window.clearTimeout(timer);
+  }, [compIndex]);
+
   useEffect(() => {
     if (!emblaApi) return;
     const onSelect = () => setPolo(emblaApi.selectedScrollSnap());
@@ -98,7 +285,7 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleEscape);
   }, []);
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+    <div>
       <main>
         <header className="header  ">
           <a href="#inicio" className="brand ">
@@ -214,8 +401,10 @@ export default function Home() {
                 <ArrowLeft size={18} />
               </button>
               <span>
-                <span aria-live="polite">0{polo + 1}</span>{" "}
-                <i>/ 0{snapCount}</i>
+                <span aria-live="polite">
+                  {String(polo + 1).padStart(2, "0")}
+                </span>{" "}
+                <i>/ {String(snapCount).padStart(2, "0")}</i>
               </span>
               <button
                 aria-label="Próxima imagem"
@@ -269,10 +458,16 @@ export default function Home() {
                         alt={item.image.alt}
                         fill
                         sizes="(max-width: 700px) 100vw, 45vw"
+                        style={
+                          index === 9 || index === carouselImages.length - 1
+                            ? { objectFit: "contain", objectPosition: "center" }
+                            : undefined
+                        }
                       />
 
                       <span>
-                        0{index + 1} / {item.polo.name.toUpperCase()}
+                        {String(index + 1).padStart(2, "0")} /{" "}
+                        {item.polo.name.toUpperCase()}
                       </span>
                     </div>
 
@@ -340,44 +535,262 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="manifesto texture">
-          <p className="eyebrow">MAIS QUE UMA ACADEMIA</p>
-          <h2 className="display">
-            Treine com propósito.
-            <br />
-            <em>Evolua com a gente.</em>
-          </h2>
-          <div className="manifesto-rule" />
-        </section>
-
-        <section className="section gallery-section">
+        <section id="competicoes" className="section competitions">
           <div className="section-head">
             <div>
-              <p className="eyebrow">VIDA NO TATAME</p>
+              <p className="eyebrow">NOSSA EQUIPE</p>
               <h2 className="display">
-                A técnica é <em>coletiva.</em>
+                Força nas <em>competições.</em>
               </h2>
+              <p className="section-note">
+                Atletas preparados, pódios conquistados e uma equipe que compete
+                de verdade.
+              </p>
             </div>
-            <p className="section-note">
-              Treinos, campeonatos e os momentos que fazem cada faixa valer a
-              pena.
-            </p>
-          </div>
-          <div className="gallery-grid">
-            {gallery.map((item, index) => (
+            <div className="carousel-controls">
               <button
-                className={`gallery-item gallery-${index + 1}`}
-                key={item.src}
-                onClick={() => setLightbox(index)}
-                aria-label={`Ampliar: ${item.alt}`}
+                aria-label="Foto anterior"
+                onClick={() => goToComp(compIndex - 1)}
               >
-                <Image
-                  src={item.src}
-                  alt={item.alt}
-                  fill
-                  sizes="(max-width: 700px) 50vw, 25vw"
-                />
+                <ArrowLeft size={18} />
               </button>
+              <span aria-live="polite">
+                {String(compIndex + 1).padStart(2, "0")}{" "}
+                <i>/ {String(competitionImages.length).padStart(2, "0")}</i>
+              </span>
+              <button
+                aria-label="Próxima foto"
+                onClick={() => goToComp(compIndex + 1)}
+              >
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="comp-window"
+            role="region"
+            aria-roledescription="carrossel"
+            aria-label="Fotos das competições"
+            onTouchStart={(event) => {
+              compTouchX.current = event.touches[0].clientX;
+            }}
+            onTouchEnd={(event) => {
+              if (compTouchX.current === null) return;
+              const diff = event.changedTouches[0].clientX - compTouchX.current;
+              compTouchX.current = null;
+              if (Math.abs(diff) > 50)
+                goToComp(compIndex + (diff < 0 ? 1 : -1));
+            }}
+          >
+            <div className="comp-track">
+              {competitionImages.map((item, index) => {
+                const total = competitionImages.length;
+                const offset =
+                  ((((index - compIndex + total / 2) % total) + total) %
+                    total) -
+                  total / 2;
+
+                return (
+                  <figure
+                    className="comp-slide"
+                    key={item.src}
+                    aria-hidden={index !== compIndex}
+                    style={{
+                      transform: `translateX(${offset * 100}%)`,
+                      visibility: Math.abs(offset) > 1 ? "hidden" : "visible",
+                    }}
+                  >
+                    <div className="comp-photo">
+                      <Image
+                        src={item.src}
+                        alt=""
+                        aria-hidden
+                        fill
+                        unoptimized
+                        sizes="20vw"
+                        className="comp-photo-bg"
+                        loading={
+                          index === 0 || Math.abs(offset) <= 1
+                            ? "eager"
+                            : "lazy"
+                        }
+                      />
+                      <Image
+                        src={item.src}
+                        alt={item.alt}
+                        fill
+                        unoptimized
+                        sizes="(max-width: 700px) 100vw, 380px"
+                        className="comp-photo-main"
+                        loading={
+                          index === 0 || Math.abs(offset) <= 1
+                            ? "eager"
+                            : "lazy"
+                        }
+                      />
+                    </div>
+                    <figcaption className="comp-info">
+                      <strong>{item.title}</strong>
+                      <span>{item.detail}</span>
+                    </figcaption>
+                  </figure>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="dots">
+            {competitionImages.map((item, index) => (
+              <button
+                key={item.src}
+                aria-label={`Ir para a foto ${index + 1}`}
+                className={index === compIndex ? "active" : ""}
+                onClick={() => goToComp(index)}
+              />
+            ))}
+          </div>
+        </section>
+
+        <section id="loja" className="section gallery-section shop">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow">LOJA AOW</p>
+              <h2 className="display">
+                Kimonos e rashguards <em>à venda.</em>
+              </h2>
+              <p className="section-note">
+                Veja os modelos, os tamanhos e os valores e fale direto com a
+                nossa secretaria pelo WhatsApp.
+              </p>
+            </div>
+            <div className="carousel-controls">
+              <button
+                aria-label="Produto anterior"
+                onClick={() => goToProd(prodIndex - 1)}
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <span aria-live="polite">
+                {String(prodIndex + 1).padStart(2, "0")}{" "}
+                <i>/ {String(produtos.length).padStart(2, "0")}</i>
+              </span>
+              <button
+                aria-label="Próximo produto"
+                onClick={() => goToProd(prodIndex + 1)}
+              >
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="comp-window"
+            role="region"
+            aria-roledescription="carrossel"
+            aria-label="Kimonos e rashguards"
+            onTouchStart={(event) => {
+              prodTouchX.current = event.touches[0].clientX;
+            }}
+            onTouchEnd={(event) => {
+              if (prodTouchX.current === null) return;
+              const diff = event.changedTouches[0].clientX - prodTouchX.current;
+              prodTouchX.current = null;
+              if (Math.abs(diff) > 50)
+                goToProd(prodIndex + (diff < 0 ? 1 : -1));
+            }}
+          >
+            <div className="comp-track">
+              {produtos.map((item, index) => {
+                const total = produtos.length;
+                const offset =
+                  ((((index - prodIndex + total / 2) % total) + total) %
+                    total) -
+                  total / 2;
+
+                return (
+                  <figure
+                    className="comp-slide"
+                    key={item.name}
+                    aria-hidden={index !== prodIndex}
+                    style={{
+                      transform: `translateX(${offset * 100}%)`,
+                      visibility: Math.abs(offset) > 1 ? "hidden" : "visible",
+                    }}
+                  >
+                    <div className="comp-photo">
+                      <Image
+                        src={item.src}
+                        alt=""
+                        aria-hidden
+                        fill
+                        unoptimized
+                        sizes="20vw"
+                        className="comp-photo-bg"
+                        loading={
+                          index === 0 || Math.abs(offset) <= 1
+                            ? "eager"
+                            : "lazy"
+                        }
+                      />
+                      <Image
+                        src={item.src}
+                        alt={item.alt}
+                        fill
+                        unoptimized
+                        sizes="(max-width: 700px) 100vw, 380px"
+                        className="comp-photo-main"
+                        loading={
+                          index === 0 || Math.abs(offset) <= 1
+                            ? "eager"
+                            : "lazy"
+                        }
+                      />
+                    </div>
+                    <figcaption className="comp-info">
+                      <p className="prod-category">{item.category}</p>
+                      <strong>{item.name}</strong>
+                      <span>{item.detail}</span>
+                      <dl className="prod-meta">
+                        <div>
+                          <dt>TAMANHOS</dt>
+                          <dd>
+                            <ul className="prod-sizes">
+                              {item.sizes.map((size) => (
+                                <li key={size}>{size}</li>
+                              ))}
+                            </ul>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>VALOR</dt>
+                          <dd className="prod-price">{item.price}</dd>
+                        </div>
+                      </dl>
+                      <a
+                        className="btn btn-red"
+                        href={lojaLink(item.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        tabIndex={index === prodIndex ? 0 : -1}
+                      >
+                        <MessageCircle size={17} /> Pedir pelo WhatsApp
+                      </a>
+                    </figcaption>
+                  </figure>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="dots">
+            {produtos.map((item, index) => (
+              <button
+                key={item.name}
+                aria-label={`Ir para ${item.name}`}
+                className={index === prodIndex ? "active" : ""}
+                onClick={() => goToProd(index)}
+              />
             ))}
           </div>
         </section>
@@ -394,9 +807,9 @@ export default function Home() {
           <div className="about-copy">
             <p className="eyebrow">QUEM GUIA A JORNADA</p>
             <h2 className="display">
-              André
+              {nomeResponsavel[0]}
               <br />
-              <em>Martins.</em>
+              <em>{nomeResponsavel.slice(1).join(" ")}.</em>
             </h2>
             <p className="rank">
               {responsavel.rank} <span>/</span> {responsavel.experience}
