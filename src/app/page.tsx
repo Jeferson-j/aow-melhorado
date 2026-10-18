@@ -47,6 +47,10 @@ const carouselImages = polos
   .slice(0, 11);
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const withBase = (src: string) =>
+  src.startsWith("/") && !src.startsWith(`${basePath}/`)
+    ? `${basePath}${src}`
+    : src;
 const competitionImages = [
   {
     src: `${basePath}/competicoes/01-rio-international-cup-podio.jpg`,
@@ -454,7 +458,7 @@ export default function Home() {
                       }}
                     >
                       <Image
-                        src={item.image.src}
+                        src={withBase(item.image.src)}
                         alt={item.image.alt}
                         fill
                         sizes="(max-width: 700px) 100vw, 45vw"
@@ -798,7 +802,7 @@ export default function Home() {
         <section id="sobre" className="section about">
           <div className="about-image">
             <Image
-              src={responsavel.image.src}
+              src={withBase(responsavel.image.src)}
               alt={responsavel.image.alt}
               fill
               sizes="(max-width: 700px) 100vw, 42vw"

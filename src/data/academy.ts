@@ -1,7 +1,9 @@
 import type { ImageAsset, Polo, Responsavel } from "@/types/academy";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const image = (src: string, alt: string): ImageAsset => ({
-  src,
+  src: src.startsWith("/") ? `${basePath}${src}` : src,
   alt,
   width: 1200,
   height: 900,
@@ -60,7 +62,7 @@ export const polos: Polo[] = [
     description:
       "Um tatame aberto para quem está começando e para quem busca sua próxima graduação.",
     images: [
-      image("/images/andre lopes.jpeg", "Treino de Jiu-Jitsu no tatame"),
+      image("/images/andre-lopes.jpeg", "Treino de Jiu-Jitsu no tatame"),
     ],
   },
   {
@@ -72,7 +74,7 @@ export const polos: Polo[] = [
     leader: "Prof.  Daniel Otoni",
     description:
       " Um tatame aberto para quem está começando e para quem busca sua próxima graduação.",
-    images: [image("/images/dani sape.jpeg", "Treino de Jiu-Jitsu no tatame")],
+    images: [image("/images/dani-sape.jpeg", "Treino de Jiu-Jitsu no tatame")],
   },
   {
     name: "Polo Fonseca",
@@ -85,7 +87,7 @@ export const polos: Polo[] = [
     description:
       "Um tatame aberto para quem está começando e para quem busca sua próxima graduação.",
     images: [
-      image("/images/dani fonseca.jpeg", "Treino de Jiu-Jitsu no tatame"),
+      image("/images/dani-fonseca.jpeg", "Treino de Jiu-Jitsu no tatame"),
     ],
   },
   {
@@ -107,7 +109,7 @@ export const polos: Polo[] = [
     leader: "Prof. Daniel Neves",
     description:
       "Um tatame aberto para quem está começando e para quem busca sua próxima graduação.",
-    images: [image("/images/deniel alves.jpeg", "Atleta em movimento")],
+    images: [image("/images/daniel-alves.jpeg", "Atleta em movimento")],
   },
   {
     name: "Polo Itauna",
