@@ -946,7 +946,7 @@ export default function Home() {
             </a>
           </div>
           <div className="copyright">
-            © 2024 {academy.name}. Todos os direitos reservados.
+            © 2023 {academy.name}. Todos os direitos reservados.
           </div>
         </footer>
         {lightbox !== null && (
