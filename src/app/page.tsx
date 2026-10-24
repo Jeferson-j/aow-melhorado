@@ -341,14 +341,19 @@ export default function Home() {
         </header>
 
         <section id="inicio" className="hero">
-          <Image
-            src="https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=2000&q=90"
-            alt="Atletas treinando Jiu-Jitsu"
-            fill
-            priority
-            sizes="100vw"
-            className="hero-image"
-          />
+          <picture>
+            <source
+              media="(min-width: 430px)"
+              srcSet={`${basePath}/images/banner-desktop.jpeg`}
+            />
+
+            <img
+              src={`${basePath}/images/banner.jpeg`}
+              alt="Atletas da AOW Jiu-Jitsu no tatame"
+              className="hero-image"
+              fetchPriority="high"
+            />
+          </picture>
           <div className="hero-shade" />
           <motion.div
             className="hero-content"
@@ -356,7 +361,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <p className="eyebrow light">DESDE 2012 · SÃO PAULO</p>
+            <p className="eyebrow light">DESDE 2023 · Brasil</p>
             <h1 className="display">
               O corpo aprende.
               <br />

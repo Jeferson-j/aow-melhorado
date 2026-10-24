@@ -13,8 +13,8 @@ export const academy = {
   name: "AOW Jiu-Jitsu",
   description:
     "Um espaço para treinar com propósito, construir confiança e evoluir dentro e fora do tatame.",
-  whatsapp: "5521999999999",
-  whatsappLoja: "5521900000000",
+  whatsapp: "5521973968108",
+  whatsappLoja: "5521990602794",
   instagram: "https://www.instagram.com/aow_jiu_jitsu?igsi=OXVzMHdnNjE5bmt0",
 };
 export const polos: Polo[] = [
@@ -27,7 +27,7 @@ export const polos: Polo[] = [
     leader: "Prof. Radson Souza",
     description:
       "Nosso primeiro endereço. Um tatame aberto para quem está começando e para quem busca sua próxima graduação.",
-    images: [image("/images/fernando.jpeg", "Treino de Jiu-Jitsu no tatame")],
+    images: [image("/images/radson.jpeg", "Treino de Jiu-Jitsu no tatame")],
   },
   {
     name: "Polo Trindade",
@@ -79,8 +79,7 @@ export const polos: Polo[] = [
   {
     name: "Polo Fonseca",
     location: "Fonseca · Niterói",
-    address:
-      " Rua Teixeira de Freitas, 418 - Fonseca Sitio Monte das Oliveiras",
+    address: "Rua Teixeira de Freitas N° 418 Fonseca - Niterói Niterói - RJ",
     schedule:
       "Terça e quinta Horário: 18:00 NoGi 19:00 Kids 20:00 Adolescentes e adultos",
     leader: "Prof. Daniel Otoni",
